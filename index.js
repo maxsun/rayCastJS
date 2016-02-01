@@ -14,10 +14,10 @@ var world= [
             [0, 0, 0, 0, 0]
 ];
 var unitSize = canvas.width/world.length;
-var screenUnitSize = canvasscreen.width/world.length;
+var screenUnitSize = canvasscreen.width;
 
 var speed = 3;
-var fov = 75;
+var fov = 50;
 var player = {x:10,y:10,dir:90,mod:0};
 
 function toDeg(radians){
@@ -43,8 +43,8 @@ function castRay(originx, originy, angle){
                 // y1=m(x2-x1)+y2
                 var xminInt = slope*(xmin-originx)+originy;
                 var xmaxInt = slope*(xmax-originx)+originy;
-                var yminInt = (ymin-originy)/slope + originx;
-                var ymaxInt = (ymax-originy)/slope + originx;
+                var yminInt = (ymin-originy)/slope+originx;
+                var ymaxInt = (ymax-originy)/slope+originx;
 
                 if(xminInt < ymax && xminInt > ymin){
                         results.push([xmin, xminInt]);
@@ -96,8 +96,8 @@ function draw(){
     if(player.dir > 360){
         player.dir -= 360;
     }
-    player.x += (speed * player.mod) * Math.cos(Math.PI / 180 * (player.dir));
-    player.y += (speed * player.mod) * Math.sin(Math.PI / 180 * (player.dir));
+    player.x += 1 * (speed * player.mod) * Math.cos(Math.PI / 180 * (player.dir));
+    player.y += 1 * (speed * player.mod) * Math.sin(Math.PI / 180 * (player.dir));
     context.clearRect(0, 0, 1000, 1000);
     contextscreen.clearRect(0,0,1000,1000);
     context.fillStyle = "rgb(200, 200, 255)"
@@ -111,9 +111,9 @@ function draw(){
             }
         }
     }
-    context.fillStyle = "rgb(0, 0, 0)";
+    context.fillStyle = "rgb(0, 0, 0ww)";
     var hits = [];
-    for(var ang = player.dir-(fov/2); ang < player.dir+(fov/2); ang++){
+    for(var ang = player.dir-(fov/2); ang < player.dir+(fov/2); ang+=.1){
         hits = hits.concat(castRay(player.x, player.y, ang));
     }
     context.fillRect(player.x, player.y, unitSize/5, unitSize/5);
@@ -121,11 +121,12 @@ function draw(){
     for(var i = 0; i < hits.length; i++){
         var h = hits[i];
         var ang = toDeg(Math.atan((h[1]-player.y)/(h[0]-player.x)));
-        var xloc = canvasscreen.width*(ang/fov);
+        var xloc = canvasscreen.width*(((player.dir-ang)/fov)+.5);
         var distance = Math.sqrt(Math.pow(player.x-h[0]*screenUnitSize,2) + Math.pow(player.y-h[1]*screenUnitSize,2));
-        var ph = (distance/canvasscreen.height)
+        distance = distance * Math.cos(player.dir-ang);
+        var ph = Math.round()
 
-        contextscreen.fillRect(xloc-15, canvasscreen.height/2-ph/2, 30, ph);
+        contextscreen.fillRect(xloc, canvasscreen.height/2-ph/2, 8, ph);
     }
 
     for(var i = 0; i < hits.length; i++){
