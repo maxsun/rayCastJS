@@ -1,5 +1,7 @@
 //http://www.permadi.com/tutorial/raycast/rayc8.html
-
+//no textures
+//bad turning
+//things dissapear when looked at 180/270 degrees
 
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
@@ -31,6 +33,7 @@ function toDeg(radians){
 function toRad(deg){
     return deg*(Math.PI/180);
 }
+
 
 //angle in degrees
 function castRay(originx, originy, angle){
@@ -197,6 +200,10 @@ function draw(){
         var perpDist = distance*Math.cos(toRad(player.dir-ang));
         var ph = screenUnitSize/perpDist;
         ph *= screenUnitSize/9;
+        var texture = new Image();
+        texture.src = 'brick.png';
+        var xs = texture.naturalWidth;
+        // contextscreen.drawImage(texture, xloc/canvasscreen.width * xs, 0, rayHitWidth, 32, xloc, canvasscreen.height/2-ph/2, rayHitWidth+10, ph);
         contextscreen.fillRect(xloc, canvasscreen.height/2-ph/2, rayHitWidth, ph);
     }
 
