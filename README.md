@@ -2,8 +2,7 @@
 ###A first person ray-casting engine in pure Javascript!
 ----
 
-To try it out, download the repository and open "index.html" 
-in a browser.
+You can try it out [here](https://maxsun.github.io/rayCastJS), or you can download the project and open "index.html" in any browser.
 
 **rayCastJS** uses HTML5's canvas element to create 3d environments similar to those of old video games like Wolfenstein 3D.
 
