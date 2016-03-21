@@ -15,18 +15,24 @@ window.addEventListener("keyup", keyup_handler, false);
 
 var world= [
             [0, 0, 0, 0, 0],
-            [0, 0, 1, 0, 0],
+            [0, 0, 1, 1, 0],
             [0, 0, 0, 0, 0],
             [0, 0, 2, 0, 0],
-            [0, 0, 0, 0, 0]
+            [0, 0, 0, 0, 2]
 ];
 var unitSize = canvas.width/world.length;
 var rayHitWidth = 1;
 var screenUnitSize = canvasscreen.width;
 
+var lastx = 0;
+var lasty = 0;
+
 var speed = 3;
+var ramp = 0;
+var momentumConstant = .03; //speed of slow down & speed up
+var stick = 5; //speed of slow down & speed up
 var fov = 50;
-var player = {x:10,y:10,dir:90,mod:0};
+var player = {x:10,y:10,dir:30,mod:0};
 var textures = ["brick.png", "test.jpg", "brick.png"];
 
 function toDeg(radians){
@@ -165,13 +171,15 @@ function keypress_handler(event) {
     if (event.keyCode == 68) {
         direction = "right"
         player.mod = 1;
-    }
-    if (event.keyCode == 37) {
+	}
+    if (event.keyCode == 37) { 
         turnSpeed = -1
     }
     if (event.keyCode == 39) {
         turnSpeed = 1;
     }
+    ramp += momentumConstant * 2;
+    if(ramp > 1){ramp=1;}
 }
 
 function draw(){
@@ -184,9 +192,22 @@ function draw(){
     if(player.dir > 360){
         player.dir -= 360;
     }
+
+    ramp -= momentumConstant;
+    if(ramp < 0){ramp=0;}
+
+	//xchange = ramp * (speed * player.mod) * Math.cos(Math.PI / 180 * (player.dir));
+    //ychange = ramp * (speed * player.mod) * Math.sin(Math.PI / 180 * (player.dir));
+
     xchange = 1 * (speed * player.mod) * Math.cos(Math.PI / 180 * (player.dir));
     ychange = 1 * (speed * player.mod) * Math.sin(Math.PI / 180 * (player.dir));
-    
+
+    xchange = (stick * lastx + xchange)/(stick+1);
+    ychange = (stick * lasty + ychange)/(stick+1);
+
+    lastx = xchange;
+    lasty = ychange;
+
     var previousCoords = {x:player.x, y:player.y};
     if(direction == "forwards"){player.x += xchange; player.y += ychange;}
     else if(direction == "backwards"){player.x -= xchange; player.y -= ychange;}
@@ -200,15 +221,15 @@ function draw(){
 
     //console.log(gridx, gridy)
 
-    try{
-        if(world[gridy][gridx] != 0){
-            player.x = previousCoords.x;
-            player.y = previousCoords.y;
-        }
-    }catch(error){
-        player.x = previousCoords.x;
-        player.y = previousCoords.y;
-    }
+    // try{
+    //     if(world[gridy][gridx] != 0){
+    //         player.x = previousCoords.x;
+    //         player.y = previousCoords.y;
+    //     }
+    // }catch(error){
+    //     player.x = previousCoords.x;
+    //     player.y = previousCoords.y;
+    // }
     player.dir += turnSpeed;
 
     context.clearRect(0, 0, 1000, 1000);
