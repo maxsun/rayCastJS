@@ -13,13 +13,21 @@ var turnSpeed = 0;
 window.addEventListener("keydown", keypress_handler, false);
 window.addEventListener("keyup", keyup_handler, false);
 
-var world= [
-            [0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 2, 0, 0],
-            [0, 0, 0, 0, 2]
-];
+var fps = 30;
+var world = [[0,1,1,1,0],
+             [1,0,0,0,0],
+             [1,0,1,1,0],
+             [0,0,1,0,0],
+             [0,0,0,0,0],];
+
+// for(var i = 0; i < worldWidth; i++){
+//     for(var j = 0; j < worldWidth; j++){
+//         if (Math.random() * 10 > 5){
+//             world[i][j] = 1;
+//         }
+//     }
+// }
+
 var unitSize = canvas.width/world.length;
 var rayHitWidth = 1;
 var screenUnitSize = canvasscreen.width;
@@ -295,7 +303,9 @@ function draw(){
         context.fillRect(hits[i][0], hits[i][1], 20, 20);
     }
     
-    window.requestAnimationFrame(draw);
+    setTimeout(function() {
+        requestAnimationFrame(draw);
+    }, 1000 / fps);
 }
 window.requestAnimationFrame(draw);
 
