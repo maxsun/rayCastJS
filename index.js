@@ -7,26 +7,18 @@ var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 var canvasscreen = document.getElementById("screen");
 var contextscreen = canvasscreen.getContext("2d");
-
+	
 var turnSpeed = 0;
 
 window.addEventListener("keydown", keypress_handler, false);
 window.addEventListener("keyup", keyup_handler, false);
 
 var fps = 30;
-var world = [[0,1,1,1,0],
-             [1,0,0,0,0],
+var world = [[0,0,1,1,0],
+             [0,0,0,0,0],
              [1,0,1,1,0],
              [0,0,1,0,0],
-             [0,0,0,0,0],];
-
-// for(var i = 0; i < worldWidth; i++){
-//     for(var j = 0; j < worldWidth; j++){
-//         if (Math.random() * 10 > 5){
-//             world[i][j] = 1;
-//         }
-//     }
-// }
+             [0,0,0,0,0]];
 
 var unitSize = canvas.width/world.length;
 var rayHitWidth = 1;
@@ -35,9 +27,9 @@ var screenUnitSize = canvasscreen.width;
 var lastx = 0;
 var lasty = 0;
 
+var fourVector = [0,0,0,0];
+
 var speed = 3;
-var ramp = 0;
-var momentumConstant = .03; //speed of slow down & speed up
 var stick = 5; //speed of slow down & speed up
 var fov = 50;
 var player = {x:10,y:10,dir:30,mod:0};
@@ -51,7 +43,6 @@ function toRad(deg){
     return deg*(Math.PI/180);
 }
 
-
 //angle in degrees
 function castRay(originx, originy, angle){
     realangle = angle
@@ -61,6 +52,7 @@ function castRay(originx, originy, angle){
     for(var y = 0; y < world.length; y++){
         for(var x = 0; x < world[y].length; x++){
             if(world[y][x] != 0){
+
                 var xmin = x*unitSize;
                 var xmax = (x+1)*unitSize;
                 var ymin = y*unitSize;
@@ -155,28 +147,42 @@ function castRay(originx, originy, angle){
 }
 
 function keyup_handler(event) {
-    if (event.keyCode == 87 || event.keyCode == 83 || event.keyCode == 65 || event.keyCode == 68) {
+    if (event.keyCode == 87) {
+        direction = "forward";
         player.mod = 0;
     }
+    if (event.keyCode == 83) {
+        direction = "backward";
+        player.mod = 0
+    }
+    if (event.keyCode == 68) {
+        direction = "left"
+        player.mod = 0;
+    }
+    if (event.keyCode == 65) {
+        direction = "right"
+        player.mod = 0;
+	}
     if (event.keyCode == 37 || event.keyCode == 39){turnSpeed = 0;}
+    directionHandler(direction, "off");
 }
 
 var direction;
 
 function keypress_handler(event) {
     if (event.keyCode == 87) {
-        direction = "forwards";
+        direction = "forward";
         player.mod = 1;
     }
     if (event.keyCode == 83) {
-        direction = "backwards";
-        player.mod = 1;
-    }
-    if (event.keyCode == 65) {
-        direction = "left"
+        direction = "backward";
         player.mod = 1;
     }
     if (event.keyCode == 68) {
+        direction = "left"
+        player.mod = 1;
+    }
+    if (event.keyCode == 65) {
         direction = "right"
         player.mod = 1;
 	}
@@ -186,8 +192,27 @@ function keypress_handler(event) {
     if (event.keyCode == 39) {
         turnSpeed = 1;
     }
-    ramp += momentumConstant * 2;
-    if(ramp > 1){ramp=1;}
+    directionHandler(direction, "on");
+}
+
+function directionHandler(signal, toggle){
+	var key = 1;
+	if (toggle == "off"){
+		var key = 0;
+	}
+	if (signal == "forward"){
+		fourVector[0] = key;
+	}
+	if (signal == "backward"){
+		fourVector[1] = key;
+	}
+	if (signal == "right"){
+		fourVector[2] = key;
+	}
+	if (signal == "left"){
+		fourVector[3] = key;
+	}
+	//console.log(fourVector)
 }
 
 function draw(){
@@ -201,12 +226,6 @@ function draw(){
         player.dir -= 360;
     }
 
-    ramp -= momentumConstant;
-    if(ramp < 0){ramp=0;}
-
-	//xchange = ramp * (speed * player.mod) * Math.cos(Math.PI / 180 * (player.dir));
-    //ychange = ramp * (speed * player.mod) * Math.sin(Math.PI / 180 * (player.dir));
-
     xchange = 1 * (speed * player.mod) * Math.cos(Math.PI / 180 * (player.dir));
     ychange = 1 * (speed * player.mod) * Math.sin(Math.PI / 180 * (player.dir));
 
@@ -217,10 +236,10 @@ function draw(){
     lasty = ychange;
 
     var previousCoords = {x:player.x, y:player.y};
-    if(direction == "forwards"){player.x += xchange; player.y += ychange;}
-    else if(direction == "backwards"){player.x -= xchange; player.y -= ychange;}
-    else if(direction == "left"){player.y -= xchange; player.x += ychange;}
-    else if(direction == "right"){player.y += xchange; player.x -= ychange;}
+    if(fourVector[0] == 1 && fourVector[1] == 0){player.x += xchange; player.y += ychange;}
+    if(fourVector[1] == 1 && fourVector[0] == 0){player.x -= xchange; player.y -= ychange;}
+    if(fourVector[2] == 1 && fourVector[3] == 0){player.y -= xchange; player.x += ychange;}
+    if(fourVector[3] == 1 && fourVector[2] == 0){player.y += xchange; player.x -= ychange;}
 
     //var gridx = Math.floor(player.x / (world.length * screenUnitSize));
     //var gridy = Math.floor(player.y / (world.length * screenUnitSize));
@@ -308,5 +327,3 @@ function draw(){
     }, 1000 / fps);
 }
 window.requestAnimationFrame(draw);
-
-
