@@ -1,6 +1,6 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
-	
+    
 var fps = 30;
 var world = [[0,0,1,1,0],
              [0,0,0,0,0],
@@ -76,7 +76,7 @@ function keyupHandler(event){
 }
 
 //angle in degrees
-function castRay(originx, originy, angle, castCounter){
+function castRay(originx, originy, angle){
     realangle = angle;
     angle -= 360*Math.floor(angle/360);
     for(var distance = 0; distance < renderDistance; distance+=resolution){
@@ -89,7 +89,7 @@ function castRay(originx, originy, angle, castCounter){
         if(gridx < world[0].length && gridy < world.length && gridx >= 0 && gridy >= 0){
             if(world[gridy][gridx] != 0){
                 var textureNumber = world[gridy][gridx];
-                return [x, y, textureNumber,castCounter];
+                return [x, y, textureNumber];
             }
         }
     }
@@ -118,32 +118,34 @@ function draw(){
         player.y += Math.cos(toRad(player.dir)) * moveSpeed;
     }
 
-    context.clearRect(0,0,400,400);
-
+    context.clearRect(0,0,1000,1000);
+    context.fillStyle = "rgb(0, 0, 255)";
+    for(var y = 0; y < world.length; y++){
+        for(var x = 0; x < world[y].length; x++){
+            if(world[y][x] != 0){
+                context.fillRect(x*unitSize,y*unitSize,unitSize-2,unitSize-2);
+            }
+        }
+    }
     var hits = [];
-    var castCounter = 0;
     castRay(player.x,player.y,player.dir);
     for(var ang = player.dir-(fov/2); ang < player.dir+(fov/2); ang+=.05){
-        rayh = castRay(player.x, player.y, ang, castCounter);
+        rayh = castRay(player.x, player.y, ang);
         if(rayh.length != 0){
             hits.push(rayh);
         }
-        castCounter+=1;
     }
-
     for(var i = 0; i < hits.length; i++){
-        var hitx = hits[i][0];
-        var hity = hits[i][1];
-        var cc = hits[i][3];
-        context.fillStyle = "rgb(0, 0, 255)";
-        var distanceFromPlayer = Math.sqrt(Math.pow(player.x-hitx,2) + Math.pow(player.y-hity,2));
-        var percievedHeight = renderDistance/distanceFromPlayer * 80;
-        var xdraw = cc/fov * 20;
-        context.fillRect(xdraw, 200 - percievedHeight/2, 10, percievedHeight);
+        context.fillStyle = "rgb(255, 0, 0)";
+        var rayh = hits[i];
+        context.fillRect(rayh[0],rayh[1],5,5);
         var texture = new Image();
-        texture.src = "brick.png";
-        context.drawImage(texture, xdraw, 200 - percievedHeight/2, 10, percievedHeight);
+        texture = "brick.png";
+        content.drawImage(texture, rayh[0], rayh[1], 5, 5);
     }
+    // context.fillStyle = "rgb(0, 255, 0)";
+    // context.fillRect(player.x,player.y,20,20);
+
 
     setTimeout(function() {
         requestAnimationFrame(draw);
