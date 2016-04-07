@@ -9,6 +9,7 @@ var world = [[0,0,1,1,0],
              [0,0,0,0,0]];
 
 var unitSize = canvas.width/world.length;
+var unitWidth = 10;
 
 var resolution = 1;
 var renderDistance = 400;
@@ -135,14 +136,16 @@ function draw(){
         var hitx = hits[i][0];
         var hity = hits[i][1];
         var cc = hits[i][3];
-        context.fillStyle = "rgb(0, 0, 255)";
         var distanceFromPlayer = Math.sqrt(Math.pow(player.x-hitx,2) + Math.pow(player.y-hity,2));
         var percievedHeight = renderDistance/distanceFromPlayer * 80;
         var xdraw = cc/fov * 20;
-        context.fillRect(xdraw, 200 - percievedHeight/2, 10, percievedHeight);
         var texture = new Image();
         texture.src = "brick.png";
-        context.drawImage(texture, xdraw, 200 - percievedHeight/2, 10, percievedHeight);
+        var adjustConstant = .15;
+        var texturePercent = 32*(hitx / (unitWidth * adjustConstant) - Math.floor(hitx/(unitWidth*adjustConstant)));
+        // context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1, percievedHeight);
+        fillStyle = "rgb(0, 0, "+toString(255-texturePercent)+")";
+        context.fillRect(xdraw, 200 - percievedHeight/2, unitWidth, percievedHeight);
     }
 
     setTimeout(function() {
