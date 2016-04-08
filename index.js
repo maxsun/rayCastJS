@@ -11,7 +11,7 @@ var world = [[0,0,0,0,0],
 var unitSize = canvas.width/world.length;
 var unitWidth = 10;
 
-var resolution = .5;
+var resolution = 3;
 var renderDistance = 400;
 
 var fov = 50;
@@ -78,8 +78,10 @@ function keyupHandler(event){
 
 //angle in degrees
 function castRay(originx, originy, angle, castCounter){
-    realangle = angle;
+    var realangle = angle;
     angle -= 360*Math.floor(angle/360);
+    var hitDirection = "ew";
+
     for(var distance = 0; distance < renderDistance; distance+=resolution){
         var x = originx + (Math.cos(toRad(angle)) * distance);
         var y = originy + (Math.sin(toRad(angle)) * distance);
@@ -90,7 +92,12 @@ function castRay(originx, originy, angle, castCounter){
         if(gridx < world[0].length && gridy < world.length && gridx >= 0 && gridy >= 0){
             if(world[gridy][gridx] != 0){
                 var textureNumber = world[gridy][gridx];
-                return [x, y, textureNumber,castCounter];
+                var yInc = Math.min(y-Math.floor(y), Math.ceil(y)-y);
+                var xInc = Math.min(x-Math.floor(x), Math.ceil(x)-x);
+                if(xInc > yInc){
+                    // hitDirection = "ns";
+                }
+                return {x:x, y:y, textureID:textureNumber,castNumber:castCounter,direction:hitDirection};
             }
         }
     }
@@ -101,7 +108,6 @@ function draw(){
 
     player.dir += movement.turningRight;
     player.dir -= movement.turningLeft;
-
     if(movement.movingForward != 0){
         player.x += Math.cos(toRad(player.dir)) * moveSpeed;
         player.y += Math.sin(toRad(player.dir)) * moveSpeed;
@@ -133,19 +139,26 @@ function draw(){
     }
 
     for(var i = 0; i < hits.length; i++){
-        var hitx = hits[i][0];
-        var hity = hits[i][1];
-        var cc = hits[i][3];
+        var hitx = hits[i].x;
+        var hity = hits[i].y;
+        var cc = hits[i].castNumber;
+        var textureId = hits[i].textureID;
+        var hitDirection = hits[i].direction;
         var distanceFromPlayer = Math.sqrt(Math.pow(player.x-hitx,2) + Math.pow(player.y-hity,2));
         var percievedHeight = renderDistance/distanceFromPlayer * 80;
         var xdraw = cc/fov * 20;
         var texture = new Image();
         texture.src = "test.jpg";
         var adjustConstant = 8;
-        var texturePercent = 32*(hitx / (unitWidth * adjustConstant) - Math.floor(hitx/(unitWidth*adjustConstant)));
+        if(hitDirection == "ew"){
+            var texturePercent = 32*(hitx / (unitWidth * adjustConstant) - Math.floor(hitx/(unitWidth*adjustConstant)));
+        }else if(hitDirection == "ns"){
+            var texturePercent = 32*(hity / (unitWidth * adjustConstant) - Math.floor(hity/(unitWidth*adjustConstant)));
+        }
+        // context.fillRect(xdraw, 200 - percievedHeight/2, 1, percievedHeight);
+        // context.fillStyle = "rgb(255,255,255)";
         context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1, percievedHeight);
-        context.fillStyle = "rgb(0, 0, "+ (Math.floor(255-texturePercent*5))+")";
-        // context.fillRect(xdraw, 200 - percievedHeight/2, unitWidth, percievedHeight);
+
     }
 
     setTimeout(function() {
