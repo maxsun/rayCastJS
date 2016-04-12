@@ -15,7 +15,7 @@ var resolution = 3;
 var renderDistance = 400;
 
 var fov = 50;
-var player = {x:10,y:10,dir:90,mod:0};
+var player = {x:10,y:10,dir:0,mod:0};
 var turningSpeed = 3;
 var moveSpeed = 3;
 
