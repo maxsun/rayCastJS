@@ -138,6 +138,8 @@ The javascript runs all of the calculation inside of the screen (the canvas).  T
         context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1 , percievedHeight);
 
     }
+    
+* Our drawing system for RaycastJS is actually pretty simple. Our “cast ray” method returns the texture ID to display, as well as an ID called cast number which tell us how many rays were cast before it. It also gives us the X and Y coordinates of the ray hit. We use this data first to calculate the distance between us (the player) and the ray hit. From the distance, we can derive the perceived height of the ray hit (things farther away appear shorter than closer things).  
 
 ----
 ### __Problems and Solutions__
