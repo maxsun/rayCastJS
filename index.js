@@ -3,7 +3,7 @@ var context = canvas.getContext("2d");
 	
 var fps = 30;
 var world = [[0,0,0,0,0],
-             [0,0,1,1,0],
+             [0,0,1,0,0],
              [0,0,0,0,0],
              [0,0,0,0,0],
              [0,0,0,0,0]];
@@ -77,7 +77,7 @@ function keyupHandler(event){
 }
 
 //angle in degrees
-function castRay(originx, originy, angle, castCounter){
+function castRay(originx, originy, angle, castNumber){
     var realangle = angle;
     angle -= 360*Math.floor(angle/360);
     var hitDirection = "ew";
@@ -87,17 +87,25 @@ function castRay(originx, originy, angle, castCounter){
         var y = originy + (Math.sin(toRad(angle)) * distance);
         var gridx = x / unitSize;
         var gridy = y / unitSize;
-        gridx = Math.floor(gridx);
-        gridy = Math.floor(gridy);
-        if(gridx < world[0].length && gridy < world.length && gridx >= 0 && gridy >= 0){
-            if(world[gridy][gridx] != 0){
-                var textureNumber = world[gridy][gridx];
-                var yInc = Math.min(y-Math.floor(y), Math.ceil(y)-y);
-                var xInc = Math.min(x-Math.floor(x), Math.ceil(x)-x);
-                if(xInc > yInc){
-                    // hitDirection = "ns";
+        var flooredGridx = Math.floor(gridx);
+        var flooredGridy = Math.floor(gridy);
+        if(flooredGridx < world[0].length && flooredGridy < world.length && flooredGridx >= 0 && flooredGridy >= 0){
+            if(world[flooredGridy][flooredGridx] != 0){
+                var textureNumber = world[flooredGridy][flooredGridx];
+                if(Math.cos(toRad(angle)) > 0) {
+                    yNormalized = (Math.tan(toRad(angle)) * (Math.floor(x) - originx) + originy);
+                    if((yNormalized > Math.floor(y) && yNormalized < Math.ceil(y))){
+                        hitDirection = "ns";
+                    }
                 }
-                return {x:x, y:y, textureID:textureNumber,castNumber:castCounter,direction:hitDirection};
+                if(Math.cos(toRad(angle)) < 0) {
+                    yNormalized = (Math.tan(toRad(angle)) * (Math.ceil(x) - originx) + originy);
+                    if((yNormalized > Math.floor(y) && yNormalized < Math.ceil(y))) {
+                        hitDirection = "ns";
+                    }
+                }
+                //console.log(hitDirection);
+                return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection};
             }
         }
     }
@@ -148,16 +156,16 @@ function draw(){
         var percievedHeight = renderDistance/distanceFromPlayer * 80;
         var xdraw = cc/fov * 20;
         var texture = new Image();
-        texture.src = "test.jpg";
+        texture.src = "brick.png";
         var adjustConstant = 8;
-        if(hitDirection == "ew"){
-            var texturePercent = 32*(hitx / (unitWidth * adjustConstant) - Math.floor(hitx/(unitWidth*adjustConstant)));
-        }else if(hitDirection == "ns"){
-            var texturePercent = 32*(hity / (unitWidth * adjustConstant) - Math.floor(hity/(unitWidth*adjustConstant)));
+        var texturePercent;
+        if(hitDirection == "ns") {
+            texturePercent = 32 * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)));
+        }else if(hitDirection == "ew"){
+            texturePercent = 32 * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)));
+
         }
-        // context.fillRect(xdraw, 200 - percievedHeight/2, 1, percievedHeight);
-        // context.fillStyle = "rgb(255,255,255)";
-        context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1, percievedHeight);
+        context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1 , percievedHeight);
 
     }
 
