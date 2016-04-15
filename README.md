@@ -139,7 +139,7 @@ The javascript runs all of the calculation inside of the screen (the canvas).  T
 
     }
     
-* Our drawing system for RaycastJS is actually pretty simple. Our “cast ray” method returns the texture ID to display, as well as an ID called cast number which tell us how many rays were cast before it. It also gives us the X and Y coordinates of the ray hit. We use this data first to calculate the distance between us (the player) and the ray hit. From the distance, we can derive the perceived height of the ray hit (things farther away appear shorter than closer things).  
+*Our drawing system for RaycastJS is actually pretty simple. Our “cast ray” method returns the texture ID to display, as well as an ID called cast number which tell us how many rays were cast before it. It also gives us the X and Y coordinates of the ray hit. We use this data first to calculate the distance between us (the player) and the ray hit. From the distance, we can derive the perceived height of the ray hit (things farther away appear shorter than closer things). We can then use our cast number to figure out which portion of the screen the ray hit should be draw at. For example, if the cast number is 50% our FOV, we know to draw that ray hit in the center of the screen. If the cast number is 90% our FOV, we know that we need to draw that hit at .9 * the width of the screen. Using just these two values, we can draw our blocks.
 
 ----
 ### __Problems and Solutions__
