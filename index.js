@@ -4,8 +4,8 @@ var context = canvas.getContext("2d");
 var fps = 30;
 var world = [[0,0,0,0,0],
              [0,0,1,0,0],
-             [0,0,0,0,0],
-             [0,0,0,0,0],
+             [0,0,0,1,1],
+             [0,0,0,0,1],
              [0,0,0,0,0]];
 
 var unitSize = canvas.width/world.length;
