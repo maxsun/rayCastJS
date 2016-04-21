@@ -89,23 +89,24 @@ function castRay(originx, originy, angle, castNumber){
         var gridy = y / unitSize;
         var flooredGridx = Math.floor(gridx);
         var flooredGridy = Math.floor(gridy);
+
         if(flooredGridx < world[0].length && flooredGridy < world.length && flooredGridx >= 0 && flooredGridy >= 0){
             if(world[flooredGridy][flooredGridx] != 0){
                 var textureNumber = world[flooredGridy][flooredGridx];
-                if(Math.cos(toRad(angle)) > 0) {
-                    yNormalized = (Math.tan(toRad(angle)) * (Math.floor(x) - originx) + originy);
-                    if((yNormalized > Math.floor(y) && yNormalized < Math.ceil(y))){
+                if(x>originx) {
+                    yNormalized = (Math.tan(toRad(angle)) * (Math.floor(x/unitSize) - originx/unitSize) + originy/unitSize);
+                    if((yNormalized > Math.floor(y/unitSize) && yNormalized < Math.ceil(y/unitSize))){
                         hitDirection = "ns";
                     }
                 }
-                if(Math.cos(toRad(angle)) < 0) {
-                    yNormalized = (Math.tan(toRad(angle)) * (Math.ceil(x) - originx) + originy);
-                    if((yNormalized > Math.floor(y) && yNormalized < Math.ceil(y))) {
+                if(x<originx) {
+                    yNormalized = (Math.tan(toRad(angle)) * (Math.ceil(x/unitSize) - originx/unitSize) + originy/unitSize);
+                    if((yNormalized > Math.floor(y/unitSize) && yNormalized < Math.ceil(y/unitSize))) {
                         hitDirection = "ns";
                     }
                 }
                 //console.log(hitDirection);
-                return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection};
+                return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection, ang:realangle};
             }
         }
     }
@@ -153,6 +154,7 @@ function draw(){
         var textureId = hits[i].textureID;
         var hitDirection = hits[i].direction;
         var distanceFromPlayer = Math.sqrt(Math.pow(player.x-hitx,2) + Math.pow(player.y-hity,2));
+        distanceFromPlayer = distanceFromPlayer*Math.cos(toRad(hits[i].ang-player.dir));
         var percievedHeight = renderDistance/distanceFromPlayer * 80;
         var xdraw = cc/fov * 20;
         var texture = new Image();
@@ -161,10 +163,16 @@ function draw(){
         var texturePercent;
         if(hitDirection == "ns") {
             texturePercent = 32 * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)));
+            // context.fillStyle = "rgb(0, "+ Math.floor(255 * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)))) +", 0)";
+            // context.fillStyle = "rgb(0,0,255)";
+            // context.fillRect(xdraw, 200 - percievedHeight/2, 1, percievedHeight);
         }else if(hitDirection == "ew"){
             texturePercent = 32 * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)));
-
+            // context.fillStyle = "rgb(0, "+ Math.floor(255 * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)))) +", 0)";
+            // context.fillStyle = "rgb(255,0,0)";
+            // context.fillRect(xdraw, 200 - percievedHeight/2, 1, percievedHeight);
         }
+        
         context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1 , percievedHeight);
 
     }
