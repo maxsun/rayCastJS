@@ -149,4 +149,8 @@ In our rewrite of the raycast function, we test only for the first instance of a
 
 *Displaying the textures on the blocks (not solved in our current implementation):*
 
-Displaying the actual texture image files on the blocks has proved to be the most complicated part of the project. In order to display the images, we not only have to identify which portion of the photo to display on which ray, but we also have to determine which face of the block our ray made contact with.
+Displaying the actual texture image files on the blocks has proved to be the most complicated part of the project. In order to display the images, we not only have to identify which portion of the photo to display on which ray, but we also have to determine which face of the block our ray made contact with.  We fixed this through a complicated algorithm which basically redraws the ray as a line using the angle as a slope.  It then uses the direction this ray was going to approximate (very well) which side it intersected with.  We had this solution for a long time, but it wasn't working because we drew our lines using values not adjusted for unitSize, the difference between our map grid and our coordinate system.  This error took a long time to diagnose and left us very confused for many class periods.  We eventually fixed it purely intuitively.
+
+*Fisheye effect distorting projected drawings:*
+
+Because our camera calculated distances looking directly forwards, the field of view used to be slightly distorted due to something called the Fisheye effect.  The edges of the drawing would have shorter percieved heights because the distances were warped.  In order to account for this distortion, we recalculated the real height based upon the difference between the angle's ray and our camera's direction.  At the moment, the fisheye effect is almost completely accounted for.
