@@ -5,8 +5,10 @@ var fps = 30;
 var world = [[0,0,0,0,0],
              [0,0,1,0,0],
              [0,0,0,1,1],
-             [0,0,0,0,1],
+             [0,0,0,0,2],
              [0,0,0,0,0]];
+
+var textures = ["brick.png", "test.jpg"];
 
 var unitSize = canvas.width/world.length;
 var unitWidth = 10;
@@ -106,7 +108,7 @@ function castRay(originx, originy, angle, castNumber){
                     }
                 }
                 //console.log(hitDirection);
-                return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection, ang:realangle};
+                return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection, ang:angle};
             }
         }
     }
@@ -148,32 +150,26 @@ function draw(){
     }
 
     for(var i = 0; i < hits.length; i++){
+        //console.log(toRad(player.dir));
         var hitx = hits[i].x;
         var hity = hits[i].y;
         var cc = hits[i].castNumber;
         var textureId = hits[i].textureID;
         var hitDirection = hits[i].direction;
         var distanceFromPlayer = Math.sqrt(Math.pow(player.x-hitx,2) + Math.pow(player.y-hity,2));
-        distanceFromPlayer = distanceFromPlayer*Math.cos(toRad(hits[i].ang-player.dir));
+        distanceFromPlayer = distanceFromPlayer*Math.cos(toRad(player.dir) - toRad(hits[i].ang));
         var percievedHeight = renderDistance/distanceFromPlayer * 80;
         var xdraw = cc/fov * 20;
         var texture = new Image();
-        texture.src = "brick.png";
+        texture.src = textures[textureId - 1];
         var adjustConstant = 8;
         var texturePercent;
         if(hitDirection == "ns") {
             texturePercent = 32 * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)));
-            // context.fillStyle = "rgb(0, "+ Math.floor(255 * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)))) +", 0)";
-            // context.fillStyle = "rgb(0,0,255)";
-            // context.fillRect(xdraw, 200 - percievedHeight/2, 1, percievedHeight);
         }else if(hitDirection == "ew"){
             texturePercent = 32 * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)));
-            // context.fillStyle = "rgb(0, "+ Math.floor(255 * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)))) +", 0)";
-            // context.fillStyle = "rgb(255,0,0)";
-            // context.fillRect(xdraw, 200 - percievedHeight/2, 1, percievedHeight);
         }
-        
-        context.drawImage(texture,texturePercent, 0, 1, 32, xdraw, 200 - percievedHeight/2, 1 , percievedHeight);
+        context.drawImage(texture,texturePercent, 0, .01, 32, xdraw, 200 - percievedHeight/2, 2, percievedHeight);
 
     }
 
