@@ -8,7 +8,7 @@ var world = [[0,0,0,0,0],
              [0,0,0,0,2],
              [0,0,0,0,0]];
 
-var textures = ["brick.png", "test.jpg"];
+var textures = ["textures/brick.png", "textures/test.jpg"];
 
 var unitSize = canvas.width/world.length;
 var unitWidth = 10;
