@@ -1,9 +1,0 @@
-The python module must be imported
-  import caveGeneration
-
-The start method will run everything you need
-  the parameter is the resolution
-    start(*desired resolution number*)
-  the function will return a 2D list (a list of lists)
-    caveList = start(*desired resolution number*)
-  
