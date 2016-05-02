@@ -37,8 +37,16 @@ def start(resolution):
     newMap = erectify(Map,resolution)
     
     hollowedMap = hollowfication(newMap,resolution,Map)
-    
-    return hollowedMap
+
+    borderedMap = []
+    for row in hollowedMap:
+        borderedMap.append([1] + row + [1])
+
+    topBottomBorder = [1 for i in range(len(borderedMap[0]))]
+    # return topBottomBorder + borderedMap + topBottomBorder
+    borderedMap.append(topBottomBorder)
+    borderedMap.insert(0, topBottomBorder)
+    return borderedMap
 
 def checkHistory(history,resolution):
     counterCap = len(history)
@@ -255,7 +263,7 @@ def drawLine(resolution,Map,x,y,angle):
 
 def makeBranch(resolution,x,y,angle,branchChance):
     branch = []
-    color = random.randint(1,2)
+    color = random.randint(1,7)
     xyPos = [x,y,color]
     branch.append(xyPos)
     firstTime = 1

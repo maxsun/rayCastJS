@@ -7,7 +7,7 @@ window.onload = function(){
 
     var world = JSON.parse(document.getElementById("data").innerHTML);
     console.log(document.getElementById("data").innerHTML);
-    var textures = ["static/brick.png", "static/test.jpg"];
+    var textures = ["static/textures/1.png", "static/textures/2.png","static/textures/3.png","static/textures/4.png","static/textures/5.png","static/textures/6.png"];
 
     var unitSize = 80;
     var unitWidth = 10;
@@ -16,7 +16,7 @@ window.onload = function(){
     var renderDistance = 500;
 
     var fov = 50;
-    var player = {x:10,y:10,dir:0,mod:0};
+    var player = {x:160,y:90,dir:0,mod:0};
     var turningSpeed = 3;
     var moveSpeed = 3;
 
