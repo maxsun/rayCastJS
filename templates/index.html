@@ -9,4 +9,6 @@
 </canvas>
 
 <h3>Use WASD to move, and the '<' & '>' keys to turn.</h3>
-<script src="index.js"></script>
+<p style= "display: none" id="data">{{gridData}}</p>
+
+<script src="{{ url_for('static', filename='index.js') }}"></script>
