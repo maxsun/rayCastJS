@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    caveMap = caveGeneration.start(32)
+    caveMap = caveGeneration.start(120)
     caveMap = json.dumps(caveMap)
     return render_template("index.html", gridData=caveMap)
 

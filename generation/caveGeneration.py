@@ -263,7 +263,7 @@ def drawLine(resolution,Map,x,y,angle):
 
 def makeBranch(resolution,x,y,angle,branchChance):
     branch = []
-    color = random.randint(1,7)
+    color = random.randint(1,6)
     xyPos = [x,y,color]
     branch.append(xyPos)
     firstTime = 1

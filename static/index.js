@@ -1,28 +1,40 @@
+//strafes faster than moves forwards/backwards
+//rendering/fading looks like shit
+//make walls solid
+//make textures variable
+//add multiplayer
+
 window.onload = function(){
 
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
     	
-    var fps = 100;
+    var fps = 1000;
 
     var world = JSON.parse(document.getElementById("data").innerHTML);
+<<<<<<< Updated upstream
     console.log(document.getElementById("data").innerHTML);
     var textures = [["static/textures/1/1.png", "static/textures/1/2.png", "static/textures/1/3.png", "static/textures/1/4.png", "static/textures/1/5.png"],
                     ["static/textures/2/1.png", "static/textures/2/2.png", "static/textures/2/3.png", "static/textures/2/4.png", "static/textures/2/5.png"],
                     ["static/textures/3/1.png", "static/textures/3/2.png", "static/textures/3/3.png", "static/textures/3/4.png", "static/textures/3/5.png"],
                     ["static/textures/4/1.png", "static/textures/4/2.png", "static/textures/4/3.png", "static/textures/4/4.png", "static/textures/4/5.png"],
                     ["static/textures/5/1.png", "static/textures/5/2.png", "static/textures/5/3.png", "static/textures/5/4.png", "static/textures/5/5.png"]];
+=======
+    var textures = ["static/textures/1.png", "static/textures/2.png","static/textures/3.png","static/textures/4.png","static/textures/5.png","static/textures/6.png"];
+>>>>>>> Stashed changes
 
     var unitSize = 80;
     var unitWidth = 10;
 
     var resolution = 3;
-    var renderDistance = 500;
+    var renderDistance = 1000;
+
+    var textureResolution = 64;
 
     var fov = 50;
     var player = {x:160,y:90,dir:0,mod:0};
     var turningSpeed = 3;
-    var moveSpeed = 3;
+    var moveSpeed = 10;
 
     var movement = {turningRight:0, turningLeft:0,movingRight:0,movingLeft:0,movingForward:0,movingBackward:0};
 
@@ -139,7 +151,11 @@ window.onload = function(){
             player.y += Math.cos(toRad(player.dir)) * moveSpeed;
         }
 
-        context.clearRect(0,0,400,400);
+        context.clearRect(0,0,canvas.width,canvas.height);
+        context.fillStyle = "rgb(156,156,156)";
+        context.fillRect(0,0,canvas.width, canvas.height/2);
+        context.fillStyle = "rgb(180,180,180)";
+        context.fillRect(0,canvas.height/2,canvas.width, canvas.height);
 
         var hits = [];
         var castCounter = 0;
@@ -157,23 +173,31 @@ window.onload = function(){
             var hitx = hits[i].x;
             var hity = hits[i].y;
             var cc = hits[i].castNumber;
+            // cc += canvas.width/2;
             var textureId = hits[i].textureID;
             var hitDirection = hits[i].direction;
             var distanceFromPlayer = Math.sqrt(Math.pow(player.x-hitx,2) + Math.pow(player.y-hity,2));
             distanceFromPlayer = distanceFromPlayer*Math.cos(toRad(player.dir) - toRad(hits[i].ang));
-            var percievedHeight = renderDistance/distanceFromPlayer * 80;
-            var xdraw = cc/fov * 20;
+            var percievedHeight = canvas.width/distanceFromPlayer * unitSize;
+            percievedHeight *= canvas.height / canvas.width * 2;
+            var xdraw = cc/fov * (canvas.width/fov * 3);
             var texture = new Image();
             texture.src = textures[textureId - 1][Math.floor(Math.random()*5)+1];
             var adjustConstant = 8;
             var texturePercent;
             if(hitDirection == "ns") {
-                texturePercent = 32 * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)));
+                texturePercent = textureResolution * (hity / (unitWidth * adjustConstant) - Math.floor(hity / (unitWidth * adjustConstant)));
             }else if(hitDirection == "ew"){
-                texturePercent = 32 * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)));
+                texturePercent = textureResolution * (hitx / (unitWidth * adjustConstant) - Math.floor(hitx / (unitWidth * adjustConstant)));
             }
-            context.drawImage(texture,texturePercent, 0, .01, 32, xdraw, 200 - percievedHeight/2, 2, percievedHeight);
-
+            context.drawImage(texture,texturePercent, 0, .01, textureResolution, xdraw, canvas.height/2 - percievedHeight/2, 2, percievedHeight);
+            var opacity = (distanceFromPlayer/renderDistance);
+            
+            if(distanceFromPlayer < renderDistance * .8){
+                opacity = 0;
+            }
+            context.fillStyle = "rgba(180,180,180,"+opacity+")";
+            context.fillRect( xdraw, canvas.height/2 - percievedHeight/2, 1, percievedHeight);
         }
 
         setTimeout(function() {
