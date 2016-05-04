@@ -7,7 +7,11 @@ window.onload = function(){
 
     var world = JSON.parse(document.getElementById("data").innerHTML);
     console.log(document.getElementById("data").innerHTML);
-    var textures = ["static/textures/1.png", "static/textures/2.png","static/textures/3.png","static/textures/4.png","static/textures/5.png","static/textures/6.png"];
+    var textures = [["static/textures/1/1.png", "static/textures/1/2.png", "static/textures/1/3.png", "static/textures/1/4.png", "static/textures/1/5.png"],
+                    ["static/textures/2/1.png", "static/textures/2/2.png", "static/textures/2/3.png", "static/textures/2/4.png", "static/textures/2/5.png"],
+                    ["static/textures/3/1.png", "static/textures/3/2.png", "static/textures/3/3.png", "static/textures/3/4.png", "static/textures/3/5.png"],
+                    ["static/textures/4/1.png", "static/textures/4/2.png", "static/textures/4/3.png", "static/textures/4/4.png", "static/textures/4/5.png"],
+                    ["static/textures/5/1.png", "static/textures/5/2.png", "static/textures/5/3.png", "static/textures/5/4.png", "static/textures/5/5.png"]];
 
     var unitSize = 80;
     var unitWidth = 10;
@@ -160,7 +164,7 @@ window.onload = function(){
             var percievedHeight = renderDistance/distanceFromPlayer * 80;
             var xdraw = cc/fov * 20;
             var texture = new Image();
-            texture.src = textures[textureId - 1];
+            texture.src = textures[textureId - 1][Math.floor(Math.random()*5)+1];
             var adjustConstant = 8;
             var texturePercent;
             if(hitDirection == "ns") {
