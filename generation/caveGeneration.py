@@ -256,14 +256,14 @@ def drawLine(resolution,Map,x,y,angle):
             if x is resolution or y is resolution or x is 0 or y is 0 or x1 is resolution or y1 is resolution or x1 is 0 or y1 is 0:
                 cancelBranch = 1
             else:
-                branch = makeBranch(resolution,x,y,branchAngle,25,)
+                branch = makeBranch(resolution,x,y,branchAngle,10)
                 history = appendLists(history,branch)
 
     return history
 
 def makeBranch(resolution,x,y,angle,branchChance):
     branch = []
-    color = random.randint(1,6)
+    color = random.randint(1,5)
     xyPos = [x,y,color]
     branch.append(xyPos)
     firstTime = 1

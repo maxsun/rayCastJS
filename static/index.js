@@ -9,19 +9,17 @@ window.onload = function(){
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
     	
-    var fps = 1000;
+    var fps = 100;
 
     var world = JSON.parse(document.getElementById("data").innerHTML);
-<<<<<<< Updated upstream
+
     console.log(document.getElementById("data").innerHTML);
     var textures = [["static/textures/1/1.png", "static/textures/1/2.png", "static/textures/1/3.png", "static/textures/1/4.png", "static/textures/1/5.png"],
                     ["static/textures/2/1.png", "static/textures/2/2.png", "static/textures/2/3.png", "static/textures/2/4.png", "static/textures/2/5.png"],
                     ["static/textures/3/1.png", "static/textures/3/2.png", "static/textures/3/3.png", "static/textures/3/4.png", "static/textures/3/5.png"],
                     ["static/textures/4/1.png", "static/textures/4/2.png", "static/textures/4/3.png", "static/textures/4/4.png", "static/textures/4/5.png"],
                     ["static/textures/5/1.png", "static/textures/5/2.png", "static/textures/5/3.png", "static/textures/5/4.png", "static/textures/5/5.png"]];
-=======
-    var textures = ["static/textures/1.png", "static/textures/2.png","static/textures/3.png","static/textures/4.png","static/textures/5.png","static/textures/6.png"];
->>>>>>> Stashed changes
+    // var textures = ["static/textures/1.png", "static/textures/2.png","static/textures/3.png","static/textures/4.png","static/textures/5.png","static/textures/6.png"];
 
     var unitSize = 80;
     var unitWidth = 10;
@@ -34,7 +32,7 @@ window.onload = function(){
     var fov = 50;
     var player = {x:160,y:90,dir:0,mod:0};
     var turningSpeed = 3;
-    var moveSpeed = 10;
+    var moveSpeed = 6;
 
     var movement = {turningRight:0, turningLeft:0,movingRight:0,movingLeft:0,movingForward:0,movingBackward:0};
 
@@ -123,7 +121,7 @@ window.onload = function(){
                         }
                     }
                     //console.log(hitDirection);
-                    return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection, ang:angle};
+                    return {x:x, y:y, textureID:textureNumber,castNumber:castNumber,direction:hitDirection, ang:angle, gridx:gridx, gridy:gridy};
                 }
             }
         }
@@ -134,13 +132,14 @@ window.onload = function(){
 
         player.dir += movement.turningRight;
         player.dir -= movement.turningLeft;
+
         if(movement.movingForward != 0){
-            player.x += Math.cos(toRad(player.dir)) * moveSpeed;
-            player.y += Math.sin(toRad(player.dir)) * moveSpeed;
+            player.x += Math.cos(toRad(player.dir)) * moveSpeed * 1.6;
+            player.y += Math.sin(toRad(player.dir)) * moveSpeed * 1.6;
         }
         if(movement.movingBackward != 0){
-            player.x -= Math.cos(toRad(player.dir)) * moveSpeed;
-            player.y -= Math.sin(toRad(player.dir)) * moveSpeed;
+            player.x -= Math.cos(toRad(player.dir)) * moveSpeed * 1.6;
+            player.y -= Math.sin(toRad(player.dir)) * moveSpeed * 1.6;
         }
         if(movement.movingLeft != 0){
             player.x += Math.sin(toRad(player.dir)) * moveSpeed;
@@ -172,6 +171,8 @@ window.onload = function(){
             //console.log(toRad(player.dir));
             var hitx = hits[i].x;
             var hity = hits[i].y;
+            var gridx = hits[i].gridx;
+            var gridy = hits[i].gridy;
             var cc = hits[i].castNumber;
             // cc += canvas.width/2;
             var textureId = hits[i].textureID;
@@ -182,7 +183,10 @@ window.onload = function(){
             percievedHeight *= canvas.height / canvas.width * 2;
             var xdraw = cc/fov * (canvas.width/fov * 3);
             var texture = new Image();
-            texture.src = textures[textureId - 1][Math.floor(Math.random()*5)+1];
+
+            var hash = 8.1219*Math.floor(gridx)*Math.floor(gridy);
+
+            texture.src = textures[textureId - 1][Math.floor((hash-Math.floor(hash))*5)];
             var adjustConstant = 8;
             var texturePercent;
             if(hitDirection == "ns") {
