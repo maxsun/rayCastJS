@@ -133,6 +133,9 @@ window.onload = function(){
         player.dir += movement.turningRight;
         player.dir -= movement.turningLeft;
 
+        var startPlayerX = player.x;
+        var startPlayerY = player.y;
+
         if(movement.movingForward != 0){
             player.x += Math.cos(toRad(player.dir)) * moveSpeed * 1.6;
             player.y += Math.sin(toRad(player.dir)) * moveSpeed * 1.6;
@@ -148,6 +151,14 @@ window.onload = function(){
         if(movement.movingRight != 0){
             player.x -= Math.sin(toRad(player.dir)) * moveSpeed;
             player.y += Math.cos(toRad(player.dir)) * moveSpeed;
+        }
+
+        var playerGridX = Math.floor(player.x / unitSize);
+        var playerGridY = Math.floor(player.y / unitSize);
+
+        if(world[playerGridY][playerGridX] != 0 ){
+            player.x = startPlayerX;
+            player.y = startPlayerY;
         }
 
         context.clearRect(0,0,canvas.width,canvas.height);
