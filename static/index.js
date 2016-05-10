@@ -13,7 +13,6 @@ window.onload = function(){
 
     var world = JSON.parse(document.getElementById("data").innerHTML);
 
-    console.log(document.getElementById("data").innerHTML);
     var textures = [["static/textures/1/1.png", "static/textures/1/2.png", "static/textures/1/3.png", "static/textures/1/4.png", "static/textures/1/5.png"],
                     ["static/textures/2/1.png", "static/textures/2/2.png", "static/textures/2/3.png", "static/textures/2/4.png", "static/textures/2/5.png"],
                     ["static/textures/3/1.png", "static/textures/3/2.png", "static/textures/3/3.png", "static/textures/3/4.png", "static/textures/3/5.png"],
