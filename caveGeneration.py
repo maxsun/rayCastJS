@@ -17,19 +17,16 @@ def makeMap(resolution):
 
 def start(resolution):
     Map = makeMap(resolution)
-    
     history = drawLine(resolution,Map,0,0,45)
-    
     acceptable = 0
-    while acceptable is 0:
+    while acceptable == 0:
         history = drawLine(resolution,Map,0,0,45)
         history = checkHistory(history,resolution)
         acceptableLine = checkLine(history,resolution)
         acceptableMap = checkMap(history,resolution)
-        if acceptableLine is 1 and acceptableMap is 1:
+        if acceptableLine == 1 and acceptableMap == 1:
             acceptable = 1
-        if acceptable is 0:
-            
+        if acceptable == 0:
             acceptable = 0
 
     Map = updateMap(Map,history)
@@ -193,7 +190,7 @@ def updateMap(Map,history):
 def checkMap(history,resolution):
     number = len(history)
     squared = resolution * resolution
-    coefficient = number/squared
+    coefficient = float(number)/float(squared)
     MAXcoefficient = 0.06
     MINcoefficient = 0.04
     if coefficient < MAXcoefficient and coefficient > MINcoefficient:
@@ -238,8 +235,7 @@ def drawLine(resolution,Map,x,y,angle):
                 done = 1
 
         if done is 1:
-            history.pop
-            history.pop
+            history.pop()
         else:
             xyPos = [x1,y1,color]
             history.append(xyPos)
