@@ -1,5 +1,5 @@
 # __RAYCAST JS__
-### Try the demo: [here](http://maxsun.github.io/rayCastJS/).
+### Try the demo: [here](https://raycastjs.herokuapp.com).
 Max Sun & Christian Wu
 
 ----
