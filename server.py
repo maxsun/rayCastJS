@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from generation import caveGeneration 
+import caveGeneration 
 import json, os
 
 app = Flask(__name__)
