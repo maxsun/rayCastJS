@@ -29,7 +29,7 @@ window.onload = function(){
     var textureResolution = 64;
 
     var fov = 50;
-    var player = {x:160,y:90,dir:0,mod:0};
+    var player = {x:160,y:90,dir:50,mod:0};
     var turningSpeed = 3;
     var moveSpeed = 6;
 
