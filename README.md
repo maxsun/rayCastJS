@@ -24,12 +24,6 @@ This Javascript file is the core of our engine. It uses HTML 5's canvas to draw 
 #### *index.html*
 This HTML file contains our canvas, imports JQuery, and imports index.js. It also contains an invisible div that we use to store our map data.
 
-#### *server.py*
-This Python2.7 file uses Flask to host a simple server. We use this to host our demo on Heroku, and we also use it to connect our Javascript to CaveGeneration.py.
-
-#### *caveGeneration.py*
-This Python2.7 file was written by Andrew Wang, we use it to generate a 2d array that represents the cave in our demo.
-
 ----
 ### __Problems and Solutions__
 *Extreme lag when displaying many blocks:*
