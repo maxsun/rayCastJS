@@ -1,8 +1,41 @@
-//strafes faster than moves forwards/backwards
-//rendering/fading looks like shit
-//make walls solid
-//make textures variable
-//add multiplayer
+
+function generateWorld(width, height, pathLen){
+    var w = new Array(height);
+    for (var i = 0; i < height; i++) {
+        var row = [];
+        for(var j = 0; j < width; j++){
+            row.push(1);
+        }
+        w[i] = row;
+    }
+    var generateCoords = {'x': 1, 'y': 1};
+    for(var i = 0; i < pathLen; i++){
+        w[generateCoords.x][generateCoords.y] = 0;
+        change = Math.floor(Math.random() * 4);
+        if(change == 0){
+            generateCoords = {'x': generateCoords.x + 1, 'y': generateCoords.y};
+        }else if(change == 1){
+            generateCoords = {'x': generateCoords.x - 1, 'y': generateCoords.y};
+        }else if(change == 2){
+            generateCoords = {'x': generateCoords.x, 'y': generateCoords.y - 1};
+        }else if(change == 3){
+            generateCoords = {'x': generateCoords.x, 'y': generateCoords.y + 1};
+        }
+        if(generateCoords.x < 1){
+            generateCoords.x += 1;
+        }
+        if(generateCoords.y < 1){
+            generateCoords.x += 1;
+        }
+        if(generateCoords.x > width - 1){
+            generateCoords.x -= 1;
+        }
+        if(generateCoords.y > height - 1){
+            generateCoords.x -= 1;
+        }
+    }
+    return w;
+}
 
 window.onload = function(){
 
@@ -11,19 +44,18 @@ window.onload = function(){
     	
     var fps = 100;
 
-    var world = JSON.parse(document.getElementById("data").innerHTML);
+    var world = generateWorld(100, 100, 50);
 
-    var textures = [["static/textures/1/1.png", "static/textures/1/2.png", "static/textures/1/3.png", "static/textures/1/4.png", "static/textures/1/5.png"],
-                    ["static/textures/2/1.png", "static/textures/2/2.png", "static/textures/2/3.png", "static/textures/2/4.png", "static/textures/2/5.png"],
-                    ["static/textures/3/1.png", "static/textures/3/2.png", "static/textures/3/3.png", "static/textures/3/4.png", "static/textures/3/5.png"],
-                    ["static/textures/4/1.png", "static/textures/4/2.png", "static/textures/4/3.png", "static/textures/4/4.png", "static/textures/4/5.png"],
-                    ["static/textures/5/1.png", "static/textures/5/2.png", "static/textures/5/3.png", "static/textures/5/4.png", "static/textures/5/5.png"]];
-    // var textures = ["static/textures/1.png", "static/textures/2.png","static/textures/3.png","static/textures/4.png","static/textures/5.png","static/textures/6.png"];
+    var textures = [["textures/1/1.png", "textures/1/2.png", "textures/1/3.png", "textures/1/4.png", "textures/1/5.png"],
+                    ["textures/2/1.png", "textures/2/2.png", "textures/2/3.png", "textures/2/4.png", "textures/2/5.png"],
+                    ["textures/3/1.png", "textures/3/2.png", "textures/3/3.png", "textures/3/4.png", "textures/3/5.png"],
+                    ["textures/4/1.png", "textures/4/2.png", "textures/4/3.png", "textures/4/4.png", "textures/4/5.png"],
+                    ["textures/5/1.png", "textures/5/2.png", "textures/5/3.png", "textures/5/4.png", "textures/5/5.png"]];
 
     var unitSize = 80;
     var unitWidth = 10;
 
-    var resolution = 3;
+    var resolution = 5;
     var renderDistance = 1000;
 
     var textureResolution = 64;
@@ -210,8 +242,6 @@ window.onload = function(){
             if(distanceFromPlayer < renderDistance * .8){
                 opacity = 0;
             }
-            context.fillStyle = "rgba(180,180,180,"+opacity+")";
-            context.fillRect( xdraw, canvas.height/2 - percievedHeight/2, 1, percievedHeight);
         }
 
         setTimeout(function() {
